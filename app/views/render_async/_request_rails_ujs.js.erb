@@ -1,5 +1,5 @@
-if (window.jQuery) {
-  (function($) {
+if (window.Rails) {
+  (function() {
     <% if turbolinks %>
     if (document.documentElement.hasAttribute("data-turbolinks-preview")) {
       return;
@@ -41,17 +41,23 @@ if (window.jQuery) {
         type: '<%= method %>',
         data: "<%= escape_javascript(data.to_s.html_safe) %>",
         headers: headers,
-        onSuccess: onSuccess,
-        onError: onError
-      })
+        success: onSuccess,
+        error: onError
+      });
 
-      function onSuccess(response){
+      function onSuccess(response, status, xmlRequest){
         var container = $("#<%= container_id %>");
+        const contentTypeJS = xmlRequest.getResponseHeader("Content-Type").includes("text/javascript");
+
         <% if interval %>
-          container.empty();
-          container.append(response);
+          if(!contentTypeJS){
+            container.empty();
+            container.append(response);
+          }
         <% else %>
-          container.replaceWith(response);
+          if(!contentTypeJS){
+            container.replaceWith(response);
+          }
         <% end %>
 
         var loadEvent = createEvent('render_async_load', container);
@@ -61,7 +67,7 @@ if (window.jQuery) {
           var event = createEvent("<%= event_name %>", container)
           document.dispatchEvent(event);
         <% end %>
-  }
+     }
 
   function onError(response){
         var skipErrorMessage = false;
@@ -82,7 +88,7 @@ if (window.jQuery) {
           var event = createEvent("<%= error_event_name %>", container)
           document.dispatchEvent(event);
         <% end %>
-  }
+     }
     };
 
     <% if retry_count > 0 %>
@@ -135,7 +141,7 @@ if (window.jQuery) {
     <% elsif !toggle %>
     _runAfterDocumentLoaded(_renderAsyncFunction)
     <% end %>
-  }(jQuery));
+  }());
 } else {
-  console.warn("Looks like you've enabled jQuery for render_async, but jQuery is not defined on the window object");
+  console.warn("Looks like you've enabled rails_ujs for render_async, but Rails is not defined on the window object");
 };
