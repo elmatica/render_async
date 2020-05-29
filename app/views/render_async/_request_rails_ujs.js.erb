@@ -31,16 +31,10 @@ if (window.Rails) {
     }
 
     function _makeRequest(currentRetryCount) {
-      var headers = <%= headers.to_json.html_safe %>;
-      var csrfTokenElement = document.querySelector('meta[name="csrf-token"]')
-      if (csrfTokenElement)
-        headers['X-CSRF-Token'] = csrfTokenElement.content
-
       Rails.ajax({
         url: '<%= path.html_safe %>',
         type: '<%= method %>',
         data: "<%= escape_javascript(data.to_s.html_safe) %>",
-        headers: headers,
         success: onSuccess,
         error: onError
       });
