@@ -22,6 +22,21 @@
                             retry_count: retry_count,
                             interval: interval,
                             turbolinks: RenderAsync.configuration.turbolinks } %>
+    <% elsif %>
+      <%= render partial: 'render_async/request_rails_ujs',
+                 formats: [:js],
+                 locals:  { container_id: container_id,
+                            path: path,
+                            method: method,
+                            data: data,
+                            event_name: event_name,
+                            toggle: toggle,
+                            headers: headers,
+                            error_message: error_message,
+                            error_event_name: error_event_name,
+                            retry_count: retry_count,
+                            interval: interval,
+                            turbolinks: RenderAsync.configuration.turbolinks } %>
     <% else %>
       <%= render partial: 'render_async/request_vanilla',
                  formats: [:js],
